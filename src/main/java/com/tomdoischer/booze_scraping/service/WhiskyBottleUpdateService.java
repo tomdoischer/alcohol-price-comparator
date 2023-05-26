@@ -1,5 +1,6 @@
 package com.tomdoischer.booze_scraping.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tomdoischer.booze_scraping.entity.WhiskyBottleUpdate;
@@ -14,6 +15,7 @@ public class WhiskyBottleUpdateService {
 	private final WhiskyBottleUpdateRepository whiskyBottleUpdateRepository;
 	private final WhiskyBottleService whiskyBottleService;
 
+	@Autowired
 	public WhiskyBottleUpdateService(WhiskyBottleUpdateRepository whiskyBottleUpdateRepository, WhiskyBottleService whiskyBottleService) {
 		this.whiskyBottleUpdateRepository = whiskyBottleUpdateRepository;
 		this.whiskyBottleService = whiskyBottleService;

@@ -1,25 +1,34 @@
 package com.tomdoischer.booze_scraping.scraper;
 
+import com.tomdoischer.booze_scraping.entity.WhiskyBottle;
 import com.tomdoischer.booze_scraping.entity.WhiskyBottleUpdate;
+import com.tomdoischer.booze_scraping.service.WhiskyBottleService;
 import com.tomdoischer.booze_scraping.service.WhiskyBottleUpdateService;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class Scraper extends AbstractScraper {
+@Component
+public class Scraper {
 
     public static final String baseUrl = "https://www.panalfred.cz/whisky/";
 
-    public Scraper(WhiskyBottleUpdateService whiskyBottleUpdateService) {
-        super(whiskyBottleUpdateService);
+    private final WhiskyBottleUpdateService whiskyBottleUpdateService;
+    private final WhiskyBottleService whiskyBottleService;
+
+    @Autowired
+    public Scraper(WhiskyBottleUpdateService whiskyBottleUpdateService, WhiskyBottleService whiskyBottleService) {
+
+        this.whiskyBottleUpdateService = whiskyBottleUpdateService;
+        this.whiskyBottleService = whiskyBottleService;
     }
 
     public void scrape() throws IOException {
@@ -99,4 +108,24 @@ public class Scraper extends AbstractScraper {
         return availability != null && !availability.isBlank() && availability.startsWith("Skladem");
     }
 
+    protected WhiskyBottleUpdate createWhiskyBottleUpdate(double price, boolean availability,
+                                                          String name, String link) {
+        WhiskyBottleUpdate whiskyBottleUpdate = new WhiskyBottleUpdate();
+        whiskyBottleUpdate.setName(name);
+        whiskyBottleUpdate.setPrice(price);
+        whiskyBottleUpdate.setLink(link);
+        whiskyBottleUpdate.setInStock(availability);
+        whiskyBottleUpdate.setWhiskyBottle(getWhiskyBottle(whiskyBottleUpdate));
+        whiskyBottleUpdateService.save(whiskyBottleUpdate);
+        return whiskyBottleUpdate;
+    }
+
+    private WhiskyBottle getWhiskyBottle(WhiskyBottleUpdate whiskyBottleUpdate) {
+        return whiskyBottleService.findWhiskyBottle(whiskyBottleUpdate.getName()).orElseGet(() -> {
+            WhiskyBottle newWhiskyBottle = new WhiskyBottle();
+            newWhiskyBottle.setName(whiskyBottleUpdate.getName());
+            newWhiskyBottle = whiskyBottleService.save(newWhiskyBottle);
+            return newWhiskyBottle;
+        });
+    }
 }

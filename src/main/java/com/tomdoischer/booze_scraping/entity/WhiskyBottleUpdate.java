@@ -1,12 +1,27 @@
 package com.tomdoischer.booze_scraping.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class WhiskyBottleUpdate {
 
-    private long id;
+    @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    private Long id;
     private String name;
     private double price;
     private String link;
     private boolean inStock;
+
+    @ManyToOne
+    @JoinColumn(name = "whisky_id", nullable = true) // temporary
     private WhiskyBottle whiskyBottle;
     public String getName() {
         return name;
@@ -40,19 +55,19 @@ public class WhiskyBottleUpdate {
         this.inStock = inStock;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public WhiskyBottle getWhiskyBottle() {
         return whiskyBottle;
     }
 
     public void setWhiskyBottle(WhiskyBottle whiskyBottle) {
         this.whiskyBottle = whiskyBottle;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

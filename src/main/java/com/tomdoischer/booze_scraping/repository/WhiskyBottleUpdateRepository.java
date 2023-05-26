@@ -2,17 +2,17 @@ package com.tomdoischer.booze_scraping.repository;
 
 import java.util.Optional;
 
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 
 import com.tomdoischer.booze_scraping.entity.WhiskyBottle;
 import com.tomdoischer.booze_scraping.entity.WhiskyBottleUpdate;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Tomáš Doischer
  */
 
-public interface WhiskyBottleUpdateRepository extends Repository<WhiskyBottleUpdate, Long> {
+@Repository
+public interface WhiskyBottleUpdateRepository extends CrudRepository<WhiskyBottleUpdate, Long> {
 	Optional<WhiskyBottleUpdate> findByNameIgnoreCase(String name);
-
-	WhiskyBottleUpdate save(WhiskyBottleUpdate whiskyBottleUpdate);
 }

@@ -22,4 +22,8 @@ public class WhiskyBottleService {
 	public Optional<WhiskyBottle> findWhiskyBottle(String name) {
 		return whiskyBottleRepository.findByNameIgnoreCase(name);
 	}
+
+	public WhiskyBottle save(WhiskyBottle whiskyBottle) {
+		return whiskyBottleRepository.save(whiskyBottle);
+	}
 }
