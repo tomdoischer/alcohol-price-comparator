@@ -7,15 +7,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 
 @SpringBootTest
-public class ScraperTest {
+public class AlfredScraperTest {
 
     @Autowired
-    private Scraper scraper;
+    private AlfredScraper alfredScraper;
 
     @Test
     public void testAlfredScrape() {
         try {
-            scraper.scrape();
+            alfredScraper.scrape();
         } catch (IOException e) {
 
         }

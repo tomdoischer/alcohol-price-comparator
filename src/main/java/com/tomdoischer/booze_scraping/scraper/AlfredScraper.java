@@ -1,6 +1,5 @@
 package com.tomdoischer.booze_scraping.scraper;
 
-import com.tomdoischer.booze_scraping.entity.WhiskyBottle;
 import com.tomdoischer.booze_scraping.entity.WhiskyBottleUpdate;
 import com.tomdoischer.booze_scraping.service.WhiskyBottleService;
 import com.tomdoischer.booze_scraping.service.WhiskyBottleUpdateService;
@@ -17,31 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class Scraper {
+public class AlfredScraper extends AbstractScraper {
 
     public static final String baseUrl = "https://www.panalfred.cz/whisky/";
 
-    private final WhiskyBottleUpdateService whiskyBottleUpdateService;
-    private final WhiskyBottleService whiskyBottleService;
-
     @Autowired
-    public Scraper(WhiskyBottleUpdateService whiskyBottleUpdateService, WhiskyBottleService whiskyBottleService) {
-
-        this.whiskyBottleUpdateService = whiskyBottleUpdateService;
-        this.whiskyBottleService = whiskyBottleService;
+    public AlfredScraper(WhiskyBottleUpdateService whiskyBottleUpdateService, WhiskyBottleService whiskyBottleService) {
+        super(whiskyBottleUpdateService, whiskyBottleService);
     }
 
-    public void scrape() throws IOException {
-        List<String> urlsToParse = getUrlsToParse();
-        List<WhiskyBottleUpdate> whiskyBottleUpdates = new ArrayList<>();
-        for (String url : urlsToParse) {
-            parseOnePage(whiskyBottleUpdates, url);
-        }
-
-        System.out.println("");
-    }
-
-    private void parseOnePage(List<WhiskyBottleUpdate> updates, String url) throws IOException {
+    protected void processOnePage(List<WhiskyBottleUpdate> updates, String url) throws IOException {
         Document doc = Jsoup
                 .connect(url)
                 .userAgent("?page=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
@@ -85,7 +69,7 @@ public class Scraper {
         return Double.parseDouble(priceWithoutSpaces);
     }
 
-    private List<String> getUrlsToParse() throws IOException {
+    protected List<String> getUrlsToParse() throws IOException {
         Document doc = Jsoup
                 .connect(baseUrl)
                 .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
@@ -106,26 +90,5 @@ public class Scraper {
 
     private boolean parseInStock(String availability) {
         return availability != null && !availability.isBlank() && availability.startsWith("Skladem");
-    }
-
-    protected WhiskyBottleUpdate createWhiskyBottleUpdate(double price, boolean availability,
-                                                          String name, String link) {
-        WhiskyBottleUpdate whiskyBottleUpdate = new WhiskyBottleUpdate();
-        whiskyBottleUpdate.setName(name);
-        whiskyBottleUpdate.setPrice(price);
-        whiskyBottleUpdate.setLink(link);
-        whiskyBottleUpdate.setInStock(availability);
-        whiskyBottleUpdate.setWhiskyBottle(getWhiskyBottle(whiskyBottleUpdate));
-        whiskyBottleUpdateService.save(whiskyBottleUpdate);
-        return whiskyBottleUpdate;
-    }
-
-    private WhiskyBottle getWhiskyBottle(WhiskyBottleUpdate whiskyBottleUpdate) {
-        return whiskyBottleService.findWhiskyBottle(whiskyBottleUpdate.getName()).orElseGet(() -> {
-            WhiskyBottle newWhiskyBottle = new WhiskyBottle();
-            newWhiskyBottle.setName(whiskyBottleUpdate.getName());
-            newWhiskyBottle = whiskyBottleService.save(newWhiskyBottle);
-            return newWhiskyBottle;
-        });
     }
 }
