@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS whisky_bottle (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     average_price_all FLOAT8,
-    average_price_past_30_days FLOAT8,
+    average_price_past_30_days FLOAT8
 );
 
 -- CREATE TABLE FOR WHISKY_BOTTLE_UPDATE
