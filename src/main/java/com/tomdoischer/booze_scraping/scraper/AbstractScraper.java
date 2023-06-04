@@ -1,5 +1,6 @@
 package com.tomdoischer.booze_scraping.scraper;
 
+import com.tomdoischer.booze_scraping.stores.Store;
 import com.tomdoischer.booze_scraping.entity.WhiskyBottle;
 import com.tomdoischer.booze_scraping.entity.WhiskyBottleUpdate;
 import com.tomdoischer.booze_scraping.service.WhiskyBottleService;
@@ -36,18 +37,23 @@ public abstract class AbstractScraper {
     protected abstract void processOnePage(List<WhiskyBottleUpdate> updates, String url) throws IOException;
 
     protected WhiskyBottleUpdate createWhiskyBottleUpdate(double price, boolean availability,
-                                                          String name, String link) {
+                                                          String name, String link, Store store) {
         WhiskyBottleUpdate whiskyBottleUpdate = new WhiskyBottleUpdate();
         whiskyBottleUpdate.setName(name);
         whiskyBottleUpdate.setPrice(price);
         whiskyBottleUpdate.setLink(link);
         whiskyBottleUpdate.setInStock(availability);
+        whiskyBottleUpdate.setStore(store);
         whiskyBottleUpdate.setWhiskyBottle(getWhiskyBottle(whiskyBottleUpdate));
         whiskyBottleUpdateService.save(whiskyBottleUpdate);
         return whiskyBottleUpdate;
     }
 
     protected WhiskyBottle getWhiskyBottle(WhiskyBottleUpdate whiskyBottleUpdate) {
+//        if (whiskyBottleUpdate.getWhiskyBottle() == null) {
+//            whiskyBottleService.findWhiskyBottle(whiskyBottleUpdate.getName())
+//                    .ifPresent(whiskyBottleUpdate::setWhiskyBottle);
+//        }
         return whiskyBottleService.findWhiskyBottle(whiskyBottleUpdate.getName()).orElseGet(() -> {
             WhiskyBottle newWhiskyBottle = new WhiskyBottle();
             newWhiskyBottle.setName(whiskyBottleUpdate.getName());

@@ -1,5 +1,6 @@
 package com.tomdoischer.booze_scraping.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
@@ -14,5 +15,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WhiskyBottleUpdateRepository extends CrudRepository<WhiskyBottleUpdate, Long> {
-	Optional<WhiskyBottleUpdate> findByNameIgnoreCase(String name);
+	List<WhiskyBottleUpdate> findByNameIgnoreCase(String name);
 }

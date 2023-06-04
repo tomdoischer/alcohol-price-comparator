@@ -4,6 +4,7 @@ import com.tomdoischer.booze_scraping.entity.WhiskyBottleUpdate;
 import com.tomdoischer.booze_scraping.service.WhiskyBottleService;
 import com.tomdoischer.booze_scraping.service.WhiskyBottleUpdateService;
 
+import com.tomdoischer.booze_scraping.stores.Store;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -40,7 +41,7 @@ public class AlfredScraper extends AbstractScraper {
             String link = getLink(product);
 
             WhiskyBottleUpdate whiskyBottleUpdate = createWhiskyBottleUpdate(parsePrice(price),
-                    parseInStock(availability), name, baseUrl + link);
+                    parseInStock(availability), name, createLink(link), Store.ALFRED);
 
             updates.add(whiskyBottleUpdate);
         }
@@ -90,5 +91,9 @@ public class AlfredScraper extends AbstractScraper {
 
     private boolean parseInStock(String availability) {
         return availability != null && !availability.isBlank() && availability.startsWith("Skladem");
+    }
+
+    private String createLink(String endLink) {
+        return "https://www.panalfred.cz" + endLink;
     }
 }

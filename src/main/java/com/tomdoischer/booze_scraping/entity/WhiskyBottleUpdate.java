@@ -1,27 +1,32 @@
 package com.tomdoischer.booze_scraping.entity;
 
-import jakarta.persistence.Column;
+import com.tomdoischer.booze_scraping.stores.Store;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+import java.time.ZonedDateTime;
 
 @Entity
+@Table(name = "whisky_bottle_update")
 public class WhiskyBottleUpdate {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private double price;
     private String link;
     private boolean inStock;
+    private ZonedDateTime timestamp;
+    private Store store;
 
     @ManyToOne
-    @JoinColumn(name = "whisky_id", nullable = true) // temporary
+    @JoinColumn(name = "whisky_bottle_id", nullable = false)
     private WhiskyBottle whiskyBottle;
     public String getName() {
         return name;
@@ -69,5 +74,21 @@ public class WhiskyBottleUpdate {
 
     public Long getId() {
         return id;
+    }
+
+    public ZonedDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(ZonedDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
     }
 }
